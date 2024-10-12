@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\proj-06-sarah_jesus_chris\Proj-06\Proj-06.csproj" />
-  </ItemGroup>
-
 </Project>

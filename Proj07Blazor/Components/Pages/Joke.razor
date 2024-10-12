@@ -1,15 +1,10 @@
 ﻿@page "/Joke";
-@using Proj_06.Data;
 @attribute [StreamRendering]
 @inject HttpClient httpClient;
 <h3>Joke</h3>
 
 <p>Id</p><input @bind=inputValue type="number"/><button @onclick=GetJoke>GetJoke</button>
-@if(theJoke != null)
-{
-    <p>@theJoke.Jokename</p>
-    <p>@theJoke.Joketext</p>
-}
+<p>@result</p>
 
 @code {
     private int Id = 0;
@@ -21,10 +16,9 @@
             Id = value;
         }
     }
-    private DbJoke theJoke = null;
-
-    public void GetJoke()
+    
+    public async Task GetJoke()
     {
-        theJoke = httpClient.GetFromJsonAsync<DbJoke>($"/Joke/GetJoke/{Id}").Result;
+        await httpClient.GetAsync($"/Joke/GetJoke/{Id}");
     }
 }
