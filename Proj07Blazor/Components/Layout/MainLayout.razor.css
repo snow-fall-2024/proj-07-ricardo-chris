@@ -4,12 +4,21 @@
     flex-direction: column;
 }
 
+label {
+    font: bold 16px;
+}
+
+button {
+    border: none;
+    border-radius: 15px;
+    background-color: purple;
+}
 main {
     flex: 1;
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-color: gray;
 }
 
 .top-row {

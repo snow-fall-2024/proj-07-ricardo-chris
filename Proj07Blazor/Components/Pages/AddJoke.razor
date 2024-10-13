@@ -1,17 +1,22 @@
-﻿@page "/GetJoke";
-<PageTitle>GetJoke</PageTitle>
+﻿@page "/AddJoke";
+
+<PageTitle>AddJoke</PageTitle>
 @attribute [StreamRendering]
 @rendermode InteractiveServer
+
 @inject HttpClient httpClient;
-<h3>Joke</h3>
+<h3>AddJoke</h3>
 <style>
+    p {
+        font-size: 16px;
+        margin: 5px;
+    }
     label {
         font: bold;
         font-size: 18px;
         margin: 5px;
         line-height: 1.5;
     }
-
     button {
         color: black;
         font: normal 16px;
@@ -23,64 +28,79 @@
         width: 100px;
         height: 50px;
     }
-    
-    button:hover {
-        background-color: dimgray;
+    #Joketext {
+        width: 600px;
+        height: 100px;
+        margin: 10px;
     }
-    button:active {
-        background-color: gray;
-    }
-    #Jokeid {
+    #Jokename {
         margin: 10px;
     }
 
-    @@media screen and (max-width: 500px) {
+    button:hover {
+        background-color: dimgray;
+    }
+
+    button:active {
+        background-color: gray;
+    }
+
+    @@media screen and (max-width: 500px)
+    {
         h3 {
             text-align: center;
         }
-
         #Joketext {
             width: 200px;
             height: 200px;
         }
-
         #AddForm {
             text-align: center;
         }
-
         #Content {
-            text-align: left;
             display: inline-block;
+            text-align: left;
+        }
+        p {
+            text-align: center;
         }
     }
 </style>
-<form method="get">
-    <AntiforgeryToken />
-    <div id="AddForm">
-        <div id="Content">
-            <label>Id</label>
+
+<div id="AddForm">
+    <div id="Content">
+        <form method="post" @onsubmit=OnSubmit @formname="AddDbJoke">
+            <AntiforgeryToken />
+            <label for="Jokename">Name</label>
             <br />
-            <InputNumber id="Jokeid" @bind-Value="Id" placeholder="Enter id"></InputNumber>
+            <InputText id="Jokename" @bind-Value="theJoke.Jokename" placeholder="Enter name"></InputText>
             <br />
-            <button type="submit" @onclick=OnSubmit>GetJoke</button>
-        </div>
+            <label for="Joketext">Joke</label>
+            <br />
+            <InputTextArea id="Joketext" @bind-Value="theJoke.Joketext" placeholder="Enter joke"></InputTextArea>
+            <br />
+            <button type="submit">AddJoke</button>
+        </form>
     </div>
-</form>
-<p>@theJoke</p>
+</div>
+@if(Added) {
+   <p>Joke is on its way</p> 
+}
 
 @code {
     [SupplyParameterFromForm]
-    public int Id { get; set; }
+    public DbJoke theJoke { get; set; }
 
-    DbJoke theJoke { get; set; }
+    public bool Added { get; set; }
     protected override void OnInitialized()
     {
-        Id = 0;
-        theJoke = null;
+        theJoke = new();
+        Added = false;
     }
     private async Task OnSubmit()
     {
-        theJoke = await httpClient.GetFromJsonAsync<DbJoke>($"/Joke/GetJoke/{Id}");
+        await httpClient.PostAsJsonAsync("/Joke/AddJoke", theJoke);
+        Added = true;
     }
 
     public partial class DbJoke
